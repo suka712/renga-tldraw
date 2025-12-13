@@ -20,3 +20,6 @@ Location data should come out of Google.com and live location should be mock. Fo
 
 ---
 The frontend is built and it connects correctly to the backend but it is not quite up to standard and doesn't look and act how a regular application would work so I am activating you. It seems to be built clearly by a model just following command and couldn't reasonably think of design by itself. I want you to help me polish the experience, not only think of the code but the user experience. For example on the onboarding stage, we have a 'essential question' section. While I did ask for 'essential questions to be added' I didn't say it has to state essential question and it need be text fillouts. I want you to help me redeisgn the flow so that it best fits with a human's user flow for any pages you see room for improvement. This is built for a hackathon presented before thousands so I want it polished to get that Grab internship. 
+
+---
+Designwise, there are a couple of inconsistencies against the design docs. For elements that have a white selected, make that background sky blue. Do not add a highlight 
