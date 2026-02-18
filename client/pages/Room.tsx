@@ -78,6 +78,15 @@ function RoomWrapper({ children, roomId }: { children: ReactNode; roomId?: strin
 					Copy link
 					{didCopy && <div className="RoomWrapper-copied">Copied!</div>}
 				</button>
+				<button
+					className="RoomWrapper-copy"
+					onClick={() => {
+						fetch('/api/auth/logout', { method: 'POST' })
+							.then(() => { window.location.href = '/portal' })
+					}}
+				>
+					Logout
+				</button>
 			</div>
 			<div className="RoomWrapper-content">{children}</div>
 		</div>

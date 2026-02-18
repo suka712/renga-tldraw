@@ -35,7 +35,4 @@ preview_bucket_name = 'multiplayer-template-preview'
 [[kv_namespaces]]
 binding = "AUTH_KV"
 id = "04a43ed1ff4f43e1a32adc53a04c2d5f"
-
-[[kv_namespaces]]
-binding = "PREVIEW_AUTH_KV"
 preview_id = "bb00e398da00429e916583d1dfd96b36"

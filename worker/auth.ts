@@ -56,6 +56,20 @@ export const handleVerifyOTP = async (request: Request, env: Env) => {
   })
 }
 
+export const handleLogout = async (request: IRequest, env: Env) => {
+  const cookie = request.headers.get('cookie')
+  const token = cookie?.match(/token=([^;]+)/)?.[1]
+
+  if (token) await env.AUTH_KV.delete(`session:${token}`)
+
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: {
+      'Content-Type': 'application/json',
+      'Set-Cookie': `token=; HttpOnly; Secure; Max-Age=0; Path=/`
+    }
+  })
+}
+
 export const requireAuth = async (request: IRequest, env: Env, _ctx?: ExecutionContext) => {
   const cookie = request.headers.get('cookie')
   const token = cookie?.match(/token=([^;]+)/)?.[1]

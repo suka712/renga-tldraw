@@ -1,7 +1,7 @@
 import { handleUnfurlRequest } from 'cloudflare-workers-unfurl'
 import { AutoRouter, error, IRequest } from 'itty-router'
 import { handleAssetDownload, handleAssetUpload } from './assetUploads'
-import { handleEmailOTP, handleVerifyOTP, requireAuth } from './auth'
+import { handleEmailOTP, handleLogout, handleVerifyOTP, requireAuth } from './auth'
 
 // make sure our sync durable object is made available to cloudflare
 export { TldrawDurableObject } from './TldrawDurableObject'
@@ -37,6 +37,8 @@ const router = AutoRouter<IRequest, [env: Env, ctx: ExecutionContext]>({
 	.get('/api/auth/me', requireAuth, (request) => {
 		return Response.json({ email: request.email })
 	})
+
+	.post('/api/auth/logout', handleLogout)
 
 	.all('*', () => {
 		return new Response('Not found', { status: 404 })
