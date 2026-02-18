@@ -2,38 +2,57 @@ import { Card, CardContent, CardFooter, CardHeader, CardDescription, CardTitle, 
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
-import { useEffect, useState } from 'react'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
+import { useState } from 'react'
 import { LucideEdit2, RefreshCcw } from 'lucide-react'
 
-type Toggle = 'login' | 'otp' | 'request'
+type Toggle = 'email' | 'otp' | 'request'
 
 export const Portal = () => {
-  const [toggle, setToggle] = useState<Toggle>('login')
+  const [toggle, setToggle] = useState<Toggle>('email')
   const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    setToggle('otp')
-  }, [])
-
-
-  const handleSubmitEmail: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
-    e.preventDefault()
+  const sendOtp = async () => {
+    setLoading(true)
     try {
-      await fetch(`/api/auth/email`, {
+      const res = await fetch('/api/auth/email', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       })
+      if (!res.ok) throw new Error('Failed to send OTP')
       setToggle('otp')
     } catch (e) {
       console.log('Shit went wrong:', e)
+    } finally {
+      setLoading(false)
     }
+  }
+
+  const verifyOtp = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/auth/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp }),
+      })
+      if (!res.ok) throw new Error('Invalid OTP')
+      window.location.href = '/'
+    } catch (e) {
+      console.log('Shit went wrong:', e)
+      setOtp('')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (toggle === 'email') sendOtp()
+    else if (toggle === 'otp') verifyOtp()
   }
 
   return (
@@ -48,10 +67,10 @@ export const Portal = () => {
         </CardHeader>
         <CardContent>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="">
-                {toggle === 'login' &&
+                {toggle === 'email' &&
                   <>
                     <Label htmlFor="email">Email</Label>
                     <Input
@@ -84,24 +103,25 @@ export const Portal = () => {
                           <InputOTPSlot index={5} />
                         </InputOTPGroup>
                       </InputOTP>
-                      <Button variant={'outline'}><LucideEdit2 /></Button>
-                      <Button variant={'outline'}><RefreshCcw /></Button>
+                      <Button type="button" variant={'outline'} onClick={() => { setToggle('email'); setOtp('') }}><LucideEdit2 /></Button>
+                      <Button type="button" variant={'outline'} onClick={sendOtp} disabled={loading}><RefreshCcw /></Button>
                     </div>
                   </>
                 }
               </div>
             </div>
+
+            <CardFooter className="flex-col gap-2 px-0 pt-6">
+              <Button type="submit" disabled={loading} className="w-full">
+                {loading ? 'Hold on...' : toggle === 'email' ? 'Send OTP' : 'Verify'}
+              </Button>
+              <Button type="button" variant="outline" className="w-full">
+                Request Access?
+              </Button>
+            </CardFooter>
           </form>
 
         </CardContent>
-        <CardFooter className="flex-col gap-2">
-          <Button type="submit" onClick={handleSubmitEmail} className="w-full">
-            Login
-          </Button>
-          <Button variant="outline" className="w-full">
-            Request Access?
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   )
