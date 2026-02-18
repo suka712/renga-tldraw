@@ -1,6 +1,7 @@
 import { handleUnfurlRequest } from 'cloudflare-workers-unfurl'
 import { AutoRouter, error, IRequest } from 'itty-router'
 import { handleAssetDownload, handleAssetUpload } from './assetUploads'
+import { handleEmailOTP, handleVerifyOTP } from './auth'
 
 // make sure our sync durable object is made available to cloudflare
 export { TldrawDurableObject } from './TldrawDurableObject'
@@ -28,6 +29,11 @@ const router = AutoRouter<IRequest, [env: Env, ctx: ExecutionContext]>({
 
 	// bookmarks need to extract metadata from pasted URLs:
 	.get('/api/unfurl', handleUnfurlRequest)
+
+	.post('/api/auth/email', handleEmailOTP)
+
+	.post('/api/auth/verify', handleVerifyOTP)
+
 	.all('*', () => {
 		return new Response('Not found', { status: 404 })
 	})
