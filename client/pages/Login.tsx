@@ -6,15 +6,13 @@ import { Input } from '@/components/ui/input'
 export const Portal = () => {
   return (
     <div className='flex justify-center items-center h-screen'>
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
+      <Card className="w-full max-w-sm py-10" >
+        <CardHeader className='flex flex-col pt-4 items-center justify-center'>
+          <CardTitle className='text-md text-secondary'>sukaseven/portal</CardTitle>
+          <CardTitle className='pt-4 text-xl'>Welcome back</CardTitle>
+          <CardDescription className='text-secondary'>
+            Login to see cool shit
           </CardDescription>
-          <CardAction>
-            <Button variant="link">Sign Up</Button>
-          </CardAction>
         </CardHeader>
         <CardContent>
           <form>
@@ -24,21 +22,9 @@ export const Portal = () => {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="poophead@sukaseven.com"
                   required
                 />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
               </div>
             </div>
           </form>
@@ -48,7 +34,7 @@ export const Portal = () => {
             Login
           </Button>
           <Button variant="outline" className="w-full">
-            Login with Google
+            Request Access?
           </Button>
         </CardFooter>
       </Card>
