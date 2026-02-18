@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import { Room } from './pages/Room'
 import { Root } from './pages/Root'
+import { Portal } from './pages/Login'
 
 const router = createBrowserRouter([
 	{
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
 		path: '/:roomId',
 		element: <Room />,
 	},
+	{
+		path: '/login',
+		element: <Portal />
+	}
 ])
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
