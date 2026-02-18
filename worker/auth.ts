@@ -42,8 +42,7 @@ export const handleVerifyOTP = async (request: Request, env: Env) => {
   try {
     if (stored !== otp) throw new Error('Invalid OTP')
 
-    const token = crypto.randomUUID()
-
+    token = crypto.randomUUID()
     await env.AUTH_KV.put(`session:${token}`, email, { expirationTtl: 7 * 24 * 60 * 60 })
   } catch (e) {
     return error(401, `${e}`)
@@ -57,14 +56,14 @@ export const handleVerifyOTP = async (request: Request, env: Env) => {
   })
 }
 
-// export const authMiddleware = async (request: IRequest, env: Env) => {
-//   const cookie = request.headers.get('cookie')
-//   const token = cookie?.match(/token=([^;]+)/)?.[1]
+export const requireAuth = async (request: IRequest, env: Env, _ctx?: ExecutionContext) => {
+  const cookie = request.headers.get('cookie')
+  const token = cookie?.match(/token=([^;]+)/)?.[1]
 
-//   if (!token) return error(401, 'Unauthorized')
+  if (!token) return error(401, 'Unauthorized')
 
-//   const email = await env.AUTH_KV.get(`session:${token}`)
-//   if (!email) return error(401, 'Invalid session')
+  const email = await env.AUTH_KV.get(`session:${token}`)
+  if (!email) return error(401, 'Invalid session')
 
-//   request.email = email
-// }
+  request.email = email
+}

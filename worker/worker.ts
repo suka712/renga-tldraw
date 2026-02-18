@@ -1,7 +1,7 @@
 import { handleUnfurlRequest } from 'cloudflare-workers-unfurl'
 import { AutoRouter, error, IRequest } from 'itty-router'
 import { handleAssetDownload, handleAssetUpload } from './assetUploads'
-import { handleEmailOTP, handleVerifyOTP } from './auth'
+import { handleEmailOTP, handleVerifyOTP, requireAuth } from './auth'
 
 // make sure our sync durable object is made available to cloudflare
 export { TldrawDurableObject } from './TldrawDurableObject'
@@ -15,20 +15,20 @@ const router = AutoRouter<IRequest, [env: Env, ctx: ExecutionContext]>({
 	},
 })
 	// requests to /connect are routed to the Durable Object, and handle realtime websocket syncing
-	.get('/api/connect/:roomId', (request, env) => {
+	.get('/api/connect/:roomId', requireAuth, (request, env) => {
 		const id = env.TLDRAW_DURABLE_OBJECT.idFromName(request.params.roomId)
 		const room = env.TLDRAW_DURABLE_OBJECT.get(id)
 		return room.fetch(request.url, { headers: request.headers, body: request.body })
 	})
 
 	// assets can be uploaded to the bucket under /uploads:
-	.post('/api/uploads/:uploadId', handleAssetUpload)
+	.post('/api/uploads/:uploadId', requireAuth, handleAssetUpload)
 
 	// they can be retrieved from the bucket too:
-	.get('/api/uploads/:uploadId', handleAssetDownload)
+	.get('/api/uploads/:uploadId', requireAuth, handleAssetDownload)
 
 	// bookmarks need to extract metadata from pasted URLs:
-	.get('/api/unfurl', handleUnfurlRequest)
+	.get('/api/unfurl', requireAuth, handleUnfurlRequest)
 
 	.post('/api/auth/email', handleEmailOTP)
 
